@@ -62,6 +62,13 @@ class OrderCollection(Resource):
         orders.append(args)
         return {"msg": "Order was added successfully", "order_data": args} 
 
+class Order(Resource):
+    def get(self, id):
+        order = get_order_by_id(id)
+        if not order:
+            return {"error": "Order not found"}
+
+        return order 
 
 
 class CustomerCollection(Resource):
@@ -102,6 +109,7 @@ class Customer(Resource):
 api.add_resource(CustomerCollection, '/users')
 api.add_resource(Customer, '/users/<int:id>')
 api.add_resource(OrderCollection, '/orders')
+api.add_resource(Order, '/orders/<int:id>')
 
 if __name__ == '__main__':
     app.run()
