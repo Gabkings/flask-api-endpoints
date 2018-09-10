@@ -57,6 +57,10 @@ class OrderCollection(Resource):
     def get(self):
         return orders
 
+    def post(self):
+        args = order_request_parser.parse_args()
+        orders.append(args)
+        return {"msg": "Order was added successfully", "order_data": args} 
 
 
 
