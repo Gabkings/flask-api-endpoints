@@ -6,13 +6,22 @@ app = Flask(__name__)
 api = Api(app, prefix="/api/v1")
 
 users = [
-    {"email": "masnun@gmail.com", "name": "Masnun", "id": 1}
+    {"email": "gabriel@gmail.com", "name": "Gabriel", "id": 1}
 ]
 
+
+def get_user_by_id(user_id):
+    for user in users:
+        if user.get("id") == int(user_id):
+            return user
+
+
 customer_request_parser = RequestParser(bundle_errors=True)
-customer_request_parser.add_argument("name", type=str, required=True, help="Name has to be valid string")
+customer_request_parser.add_argument(
+    "name", type=str, required=True, help="Name has to be valid string")
 customer_request_parser.add_argument("email", required=True)
-customer_request_parser.add_argument("id", type=int, required=True, help="Please enter valid integer as ID")
+customer_request_parser.add_argument(
+    "id", type=int, required=True, help="Please enter valid integer as ID")
 
 
 class CustomerCollection(Resource):
@@ -20,20 +29,34 @@ class CustomerCollection(Resource):
         return users
 
     def post(self):
-        args = subscriber_request_parser.parse_args()
+        args = customer_request_parser.parse_args()
         users.append(args)
         return {"msg": "Subscriber added", "subscriber_data": args}
 
 
 class Customer(Resource):
     def get(self, id):
-        return {"msg": "Details about user id {}".format(id)}
+        user = get_user_by_id(id)
+        if not user:
+            return {"error": "User not found"}
+
+        return user
 
     def put(self, id):
-        return {"msg": "Update user id {}".format(id)}
+        args = customer_request_parser.parse_args()
+        user = get_user_by_id(id)
+        if user:
+            users.remove(user)
+            users.append(args)
+
+        return args
 
     def delete(self, id):
-        return {"msg": "Delete user id {}".format(id)}
+        user = get_user_by_id(id)
+        if user:
+            users.remove(user)
+
+        return {"message": "Deleted"}
 
 
 api.add_resource(CustomerCollection, '/users')
