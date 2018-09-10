@@ -6,7 +6,18 @@ app = Flask(__name__)
 api = Api(app, prefix="/api/v1")
 
 users = [
-    {"email": "gabriel@gmail.com", "name": "Gabriel", "id": 1}
+    {"id": 1, "name": "Masnun","email": "masnun@gmail.com"},
+    {"id": 2, "name": "Gitonga","email": "gitonga@gmail.com"},
+    {"id": 3, "name": "Gabriel","email": "gabriel@gmail.com"}
+]
+
+orders = [
+    {"id":1,"No of items ordered":1,"name":"pizza","cost":123,"status":"pending"},
+    {"id":2,"No of items ordered":1,"name":"pizza","cost":123,"status":"pending"},
+    {"id":3,"No of items ordered":1,"name":"pizza","cost":123,"status":"pending"},
+    {"id":4,"No of items ordered":1,"name":"pizza","cost":123,"status":"pending"},
+    {"id":5,"No of items ordered":1,"name":"pizza","cost":123,"status":"pending"},
+    {"id":6,"No of items ordered":1,"name":"pizza","cost":123,"status":"pending"}
 ]
 
 
@@ -15,6 +26,25 @@ def get_user_by_id(user_id):
         if user.get("id") == int(user_id):
             return user
 
+def get_order_by_id(order_id):
+    for order in orders:
+        if order.get("id") == int(order_id):
+            return order
+
+
+subscriber_request_parser = RequestParser(bundle_errors=True)
+order_request_parser = RequestParser(bundle_errors= True)
+#users validation stars here
+subscriber_request_parser.add_argument("name", type=str, required=True, help="Name has to be valid string")
+subscriber_request_parser.add_argument("email", required=True)
+subscriber_request_parser.add_argument("id", type=int, required=True, help="Please enter valid integer as ID")
+#orders validation starts here 
+order_request_parser.add_argument("name", type=str, required=True, help="Name has to be valid string")
+order_request_parser.add_argument("status", type=str, required=True, help="Name has to be valid string")
+order_request_parser.add_argument("id", type=int, required=True, help="Please enter valid integer as ID")
+order_request_parser.add_argument("cost", type=int, required=True, help="Please enter valid integer as ID")
+order_request_parser.add_argument("No of items ordered", type=int, required=True, help="Please enter valid integer as ID")
+
 
 customer_request_parser = RequestParser(bundle_errors=True)
 customer_request_parser.add_argument(
@@ -22,6 +52,12 @@ customer_request_parser.add_argument(
 customer_request_parser.add_argument("email", required=True)
 customer_request_parser.add_argument(
     "id", type=int, required=True, help="Please enter valid integer as ID")
+#class to get all the customer orders and place a new order
+class OrderCollection(Resource):
+    def get(self):
+        return orders
+
+
 
 
 class CustomerCollection(Resource):
@@ -61,6 +97,7 @@ class Customer(Resource):
 
 api.add_resource(CustomerCollection, '/users')
 api.add_resource(Customer, '/users/<int:id>')
+api.add_resource(OrderCollection, '/orders')
 
 if __name__ == '__main__':
     app.run()
