@@ -79,6 +79,13 @@ class Order(Resource):
 
         return args
 
+    def delete(self, id):
+        order = get_order_by_id(id)
+        if order:
+            orders.remove(order)
+
+        return {"message": "Deleted"}
+
 
 class CustomerCollection(Resource):
     def get(self):
