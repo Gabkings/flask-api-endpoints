@@ -61,7 +61,7 @@ class OrderCollection(Resource):
         args = order_request_parser.parse_args()
         orders.append(args)
         return {"msg": "Order was added successfully", "order_data": args} 
-
+#Class to enable access of indivial orders
 class Order(Resource):
     def get(self, id):
         order = get_order_by_id(id)
@@ -69,6 +69,15 @@ class Order(Resource):
             return {"error": "Order not found"}
 
         return order 
+
+    def put(self, id):
+        args = customer_request_parser.parse_args()
+        Order = get_order_by_id(id)
+        if Order:
+            orders.remove(user)
+            orders.append(args)
+
+        return args
 
 
 class CustomerCollection(Resource):
