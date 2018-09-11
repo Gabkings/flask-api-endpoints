@@ -84,7 +84,7 @@ class Order(Resource):
         if order:
             orders.remove(order)
 
-        return {"message": "Deleted"}
+        return {"message": "Deleted Completly"}
 
 
 class CustomerCollection(Resource):
