@@ -1,9 +1,10 @@
-from flask import Flask
+from flask import Flask, render_template, url_for
 from flask_restful import Resource, Api
 from flask_restful.reqparse import RequestParser
 
 app = Flask(__name__)
 api = Api(app, prefix="/api/v1")
+api2 = Api(app, prefix="/")
 
 users = [
     {"id": 1, "name": "Masnun","email": "masnun@gmail.com"},
@@ -52,6 +53,9 @@ customer_request_parser.add_argument(
 customer_request_parser.add_argument("email", required=True)
 customer_request_parser.add_argument(
     "id", type=int, required=True, help="Please enter valid integer as ID")
+class Guide(Resource):
+    def usage_guide(self):
+        return render_template(usage_guide.html)
 #class to get all the customer orders and place a new order
 class OrderCollection(Resource):
     def get(self):
@@ -121,7 +125,7 @@ class Customer(Resource):
 
         return {"message": "Deleted"}
 
-
+api2.add_resource(Guide,'/')
 api.add_resource(CustomerCollection, '/users')
 api.add_resource(Customer, '/users/<int:id>')
 api.add_resource(OrderCollection, '/orders')
